@@ -20,27 +20,36 @@ export default function MyRecipeScreen() {
   const [recipes, setrecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchrecipes = async () => {
-      try {
-        // Fetch recipes from AsyncStorage
-        const storedRecipes = await AsyncStorage.getItem("customrecipes");
-        
-        // Check if recipes exist and parse them
-        if (storedRecipes) {
-          const parsedRecipes = JSON.parse(storedRecipes);
-          setrecipes(parsedRecipes);
-        }
-      } catch (error) {
-        console.error("Error fetching recipes:", error);
-      } finally {
-        // Update loading state
-        setLoading(false);
+  const fetchrecipes = async () => {
+    try {
+      // Fetch recipes from AsyncStorage
+      const storedRecipes = await AsyncStorage.getItem("customrecipes");
+      
+      // Check if recipes exist and parse them
+      if (storedRecipes) {
+        const parsedRecipes = JSON.parse(storedRecipes);
+        setrecipes(parsedRecipes);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+    } finally {
+      // Update loading state
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchrecipes();
   }, []);
+
+  // Add focus listener to refresh when navigating back
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchrecipes();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleAddrecipe = () => {
     navigation.navigate("RecipesFormScreen");
@@ -72,20 +81,6 @@ export default function MyRecipeScreen() {
     navigation.navigate("RecipesFormScreen", {
       recipeToEdit: recipe,
       recipeIndex: index,
-      onrecipeEdited: () => {
-        // Refresh the recipes list after editing
-        const fetchrecipes = async () => {
-          try {
-            const storedRecipes = await AsyncStorage.getItem("customrecipes");
-            if (storedRecipes) {
-              setrecipes(JSON.parse(storedRecipes));
-            }
-          } catch (error) {
-            console.error("Error refreshing recipes:", error);
-          }
-        };
-        fetchrecipes();
-      },
     });
   };
 
@@ -167,8 +162,9 @@ const styles = StyleSheet.create({
     padding: wp(.7),
     alignItems: "center",
     borderRadius: 5,
-    width:300,
-    marginLeft:500
+    width: 300,
+    alignSelf: "center",
+    marginBottom: hp(2),
   },
   addButtonText: {
     color: "#fff",
