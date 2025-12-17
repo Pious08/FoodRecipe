@@ -21,9 +21,7 @@ export default function FavoriteScreen() {
   const favoriteRecipes = useSelector((state) => state.favorites);
   const favoriteRecipesList = favoriteRecipes?.favoriterecipes || [];
   console.log(favoriteRecipes.favoriterecipes);
-  console.log('favoriteRecipesList',favoriteRecipesList);
-  
-  
+  console.log('favoriteRecipesList', favoriteRecipesList);
 
   if (favoriteRecipesList.length === 0) {
     return (
@@ -38,7 +36,7 @@ export default function FavoriteScreen() {
             borderRadius: 5,
             marginTop: 10,
             width: 100,
-            alignItems: "center ",
+            alignItems: "center",
           }}
         >
           <Text style={{ color: "#fff" }}>Go back</Text>
@@ -58,7 +56,7 @@ export default function FavoriteScreen() {
           My Favorite Recipes
         </Text>
       </View>
-    
+
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={{
@@ -73,7 +71,36 @@ export default function FavoriteScreen() {
       >
         <Text style={{ color: "#fff" }}>Go back</Text>
       </TouchableOpacity>
-    
+
+      <FlatList
+        data={favoriteRecipesList}
+        contentContainerStyle={styles.listContentContainer}
+        keyExtractor={(item) => item.idFood}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => navigation.navigate('RecipeDetail', { item })}
+            activeOpacity={0.7}
+          >
+            <Image
+              source={{ uri: item.recipeImage }}
+              style={styles.recipeImage}
+              resizeMode="cover"
+            />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.recipeTitle} numberOfLines={2}>
+                {item.recipeName.length > 20
+                  ? item.recipeName.substring(0, 20) + "..."
+                  : item.recipeName}
+              </Text>
+              <Text style={styles.recipeCategory}>
+                {item.recipeCategory}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        showsVerticalScrollIndicator={false}
+      />
     </>
   );
 }
@@ -115,5 +142,11 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     fontWeight: "bold",
     color: "#4B5563", // text-neutral-700
+    marginBottom: hp(0.5),
+  },
+  recipeCategory: {
+    fontSize: hp(1.6),
+    color: "#9CA3AF",
+    fontWeight: "500",
   },
 });
