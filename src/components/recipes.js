@@ -7,13 +7,20 @@ export default function Recipe({ categories, foods }) {
   const navigation = useNavigation();
 
   const renderItem = ({ item, index }) => (
-<ArticleCard item={item} index={index} navigation={navigation} />
+    <ArticleCard item={item} index={index} navigation={navigation} />
   );
 
   return (
     <View style={styles.container}>
       <View testID="recipesDisplay">
-            
+        <FlatList
+          data={foods}
+          keyExtractor={(item) => item.recipeId}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     </View>
   );
@@ -22,9 +29,28 @@ export default function Recipe({ categories, foods }) {
 const ArticleCard = ({ item, index, navigation }) => {
   return (
     <View
-      style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15}]} testID="articleDisplay"
+      style={[styles.cardContainer, { paddingLeft: 20, paddingRight: 15}]} 
+      testID="articleDisplay"
     >
-   
+      <TouchableOpacity
+        onPress={() => navigation.navigate('RecipeDetail', { item })}
+        activeOpacity={0.7}
+      >
+        <Image
+          source={{ uri: item.recipeImage }}
+          style={[
+            styles.articleImage,
+            { height: index % 3 === 0 ? hp(25) : hp(35) }
+          ]}
+          resizeMode="cover"
+        />
+        <Text style={styles.articleText} numberOfLines={1}>
+          {item.recipeName}
+        </Text>
+        <Text style={styles.articleDescription} numberOfLines={2}>
+          {item.cookingDescription}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -50,7 +76,6 @@ const styles = StyleSheet.create({
   },
   articleImage: {
     width: "100%",
-   
     borderRadius: 35,
     backgroundColor: "rgba(0, 0, 0, 0.05)", // bg-black/5
   },
