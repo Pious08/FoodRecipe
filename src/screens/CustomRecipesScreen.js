@@ -50,18 +50,21 @@ import {
       >
         {/* Recipe Image */}
         <View style={styles.imageContainer} testID="imageContainer">
-        {recipe.image && (
-            <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+          {recipe.image && (
+            <Image 
+              source={{ uri: recipe.image }} 
+              style={styles.recipeImage}
+            />
           )}
         </View>
-        <View
-          style={styles.topButtonsContainer} testID="topButtonsContainer"
-        >
+
+        {/* Back Button and Favorite Button */}
+        <View style={styles.topButtonsContainer} testID="topButtonsContainer">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Text>Back</Text>
+            <Text>Go Back</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleToggleFavorite}
@@ -73,11 +76,11 @@ import {
   
         {/* Recipe Details */}
         <View style={styles.contentContainer} testID="contentContainer">
-        <Text style={styles.recipeTitle}>{recipe.title}</Text>
-  <View style={styles.sectionContainer}>
-    <Text style={styles.sectionTitle}>Content</Text>
-    <Text style={styles.contentText}>{recipe.description}</Text>
-  </View>
+          <Text style={styles.recipeTitle}>{recipe.title}</Text>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Content</Text>
+            <Text style={styles.contentText}>{recipe.description}</Text>
+          </View>
         </View>
       </ScrollView>
     );
